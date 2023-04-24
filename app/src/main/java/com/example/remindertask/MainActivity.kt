@@ -1,14 +1,10 @@
 package com.example.remindertask
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.activity.viewModels
-import androidx.fragment.app.findFragment
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.remindertask.databinding.ActivityMainBinding
-import com.example.remindertask.viewmodel.IntroViewModel
 import com.example.remindertask.viewmodel.MainActivityViewModel
 
 class MainActivity : AppCompatActivity() {
