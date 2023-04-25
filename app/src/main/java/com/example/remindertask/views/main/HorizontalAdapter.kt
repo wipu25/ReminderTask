@@ -5,7 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.remindertask.databinding.HorizontalItemBinding
 
-class HorizontalAdapter(private val list: List<String>) : RecyclerView.Adapter<HorizontalAdapter.ViewHolder>() {
+class HorizontalAdapter(private val list: List<String>) :
+    RecyclerView.Adapter<HorizontalAdapter.ViewHolder>() {
     class ViewHolder(private val item: HorizontalItemBinding) : RecyclerView.ViewHolder(item.root) {
         fun bind(text: String) {
             item.textHead.text = text
@@ -13,7 +14,7 @@ class HorizontalAdapter(private val list: List<String>) : RecyclerView.Adapter<H
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val item = HorizontalItemBinding.inflate(LayoutInflater.from(parent.context),parent, false)
+        val item = HorizontalItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(item)
     }
 

@@ -56,4 +56,7 @@ dependencies {
     implementation 'com.tbuonomo:dotsindicator:4.3'
     //////////////////////////////////////
 
+    ///////Date Picker/////////
+    implementation 'com.kizitonwose.calendar:view:2.3.0'
+
 }

@@ -16,8 +16,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mainActivityViewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
         binding = ActivityMainBinding.inflate(layoutInflater)
-        if(mainActivityViewModel.getIsIntroSeen()) {
-            val navController = (supportFragmentManager.findFragmentById(binding.navHostFragment.id) as NavHostFragment).navController
+        if (mainActivityViewModel.getIsIntroSeen()) {
+            val navController =
+                (supportFragmentManager.findFragmentById(binding.navHostFragment.id) as NavHostFragment).navController
             val graph = navController.navInflater.inflate(R.navigation.nav_graph)
             graph.setStartDestination(R.id.main)
             navController.graph = graph

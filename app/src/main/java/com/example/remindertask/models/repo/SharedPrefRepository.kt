@@ -7,11 +7,11 @@ class SharedPrefRepository(private val sharedPreferences: SharedPreferences) : S
 
     override fun saveBoolean(key: String, value: Boolean) {
         val edit = sharedPreferences.edit()
-        edit.putBoolean(key,value)
+        edit.putBoolean(key, value)
         edit.apply()
     }
 
     override fun getBoolean(key: String, defaultValue: Boolean): Boolean {
-        return sharedPreferences.getBoolean(key,defaultValue)
+        return sharedPreferences.getBoolean(key, defaultValue)
     }
 }

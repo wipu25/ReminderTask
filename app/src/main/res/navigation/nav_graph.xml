@@ -32,6 +32,11 @@
         android:id="@+id/add_reminder"
         android:name="com.example.remindertask.views.addRemainder.FragmentAddReminder"
         tools:layout="@layout/fragment_main"
-        />
+        >
+        <action
+            android:id="@+id/add_reminder_to_main"
+            app:destination="@id/main"
+            />
+    </fragment>
 
 </navigation>

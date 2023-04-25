@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.remindertask.R
 import com.example.remindertask.databinding.FragmentSlideBinding
 
-private val ARG_PARAM1 : String = ""
+private val ARG_PARAM1: String = ""
 
 class FragmentSlide : Fragment() {
     private var param1: Int? = null
@@ -36,7 +35,7 @@ class FragmentSlide : Fragment() {
         val text = binding.text
         val description = binding.description
         val image = binding.introIcon
-        when(param1) {
+        when (param1) {
             0 -> {
                 text.text = "Remind Task"
                 description.text = "Reminding task app it just a normal reminder"
@@ -44,12 +43,14 @@ class FragmentSlide : Fragment() {
             }
             1 -> {
                 text.text = "Alert"
-                description.text = "We will alert you for what task don't forget to turn on the notifications"
+                description.text =
+                    "We will alert you for what task don't forget to turn on the notifications"
                 image.setImageResource(R.drawable.notification)
             }
             2 -> {
                 text.text = "Track"
-                description.text = "We let you check what you have complete and ignore what you not. Feel free to be impress and guilt for your progress"
+                description.text =
+                    "We let you check what you have complete and ignore what you not. Feel free to be impress and guilt for your progress"
                 image.setImageResource(R.drawable.sticky_notes)
             }
             else -> {

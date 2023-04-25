@@ -3,9 +3,8 @@ package com.example.remindertask.views.intro
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.remindertask.views.intro.FragmentSlide
 
-class ViewPageAdapter(fa: FragmentActivity): FragmentStateAdapter(fa) {
+class ViewPageAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
     override fun getItemCount(): Int {
         return 3
     }

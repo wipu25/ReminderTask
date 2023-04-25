@@ -1,24 +1,18 @@
 package com.example.remindertask.views.intro
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.example.remindertask.databinding.FragmentIntroBinding
 import com.example.remindertask.viewmodel.IntroViewModel
-import java.util.Objects
-import kotlin.system.exitProcess
 
 class FragmentIntro : Fragment() {
-    private lateinit var pageChangeCallback : OnPageChangeCallback
+    private lateinit var pageChangeCallback: OnPageChangeCallback
     private lateinit var binding: FragmentIntroBinding
     private lateinit var introViewModel: IntroViewModel
 
@@ -37,9 +31,9 @@ class FragmentIntro : Fragment() {
         vp.adapter = ViewPageAdapter(this.requireActivity())
         dotIndicator.attachTo(vp)
 
-        pageChangeCallback = object: OnPageChangeCallback() {
+        pageChangeCallback = object : OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                if(position == 2) {
+                if (position == 2) {
                     finBtn.text = "Finish"
                     nextBtn.visibility = View.GONE
                     return
