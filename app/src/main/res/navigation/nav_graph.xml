@@ -37,6 +37,20 @@
             android:id="@+id/add_reminder_to_main"
             app:destination="@id/main"
             />
+        <action
+            android:id="@+id/add_reminder_to_map"
+            app:destination="@id/add_reminder_map"
+            />
+    </fragment>
+
+    <fragment
+        android:id="@+id/add_reminder_map"
+        android:name="com.example.remindertask.AddRemainderMapsFragment"
+        tools:layout="@layout/fragment_add_remainder_maps"
+        >
+        <action
+            android:id="@+id/action_add_reminder_map_to_add_reminder"
+            app:destination="@id/add_reminder" />
     </fragment>
 
 </navigation>

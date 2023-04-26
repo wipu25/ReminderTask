@@ -41,6 +41,7 @@ class FragmentAddReminder : Fragment() {
         initTextField(endDateBinding, "End Date", "4/12/2022")
         initStartDateField()
         initEndDateField()
+        initLocationField()
 
         binding.cancel.setOnClickListener {
             this.findNavController().navigate(FragmentAddReminderDirections.addReminderToMain())
@@ -57,6 +58,14 @@ class FragmentAddReminder : Fragment() {
         return binding.root
     }
 
+    private fun initLocationField() {
+        val locationField = binding.location.field
+        disableFieldSettings(locationField)
+        locationField.setOnClickListener {
+            this.findNavController().navigate(FragmentAddReminderDirections.addReminderToMap())
+        }
+    }
+
     private fun initTextField(binding: TextFieldBinding, title: String, hint: String) {
         binding.title.text = title
         binding.field.hint = hint
@@ -64,7 +73,7 @@ class FragmentAddReminder : Fragment() {
 
     private fun initStartDateField() {
         val fieldBinding = startDateBinding.field
-        dateFieldSettings(fieldBinding)
+        disableFieldSettings(fieldBinding)
 
         viewModel.startDateLiveData.observe(this.viewLifecycleOwner) { startDate ->
             val year = startDate.year
@@ -81,7 +90,7 @@ class FragmentAddReminder : Fragment() {
 
     private fun initEndDateField() {
         val fieldBinding = endDateBinding.field
-        dateFieldSettings(fieldBinding)
+        disableFieldSettings(fieldBinding)
 
         viewModel.endDateLiveData.observe(this.viewLifecycleOwner) { endDate ->
             val year = endDate.year
@@ -97,7 +106,7 @@ class FragmentAddReminder : Fragment() {
         }
     }
 
-    private fun dateFieldSettings(field: EditText) {
+    private fun disableFieldSettings(field: EditText) {
         field.showSoftInputOnFocus = false
         field.inputType = InputType.TYPE_NULL
         field.isFocusable = false

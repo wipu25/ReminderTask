@@ -13,8 +13,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="12" />
-                            <option name="y" value="12" />
+                            <option name="x" value="688" />
+                            <option name="y" value="-30" />
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -24,7 +24,24 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+                            <entry key="add_reminder_to_map">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                           </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="add_reminder_map">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="298" />
+                            <option name="y" value="326" />
+                          </Point>
                         </option>
                       </LayoutPositions>
                     </value>
