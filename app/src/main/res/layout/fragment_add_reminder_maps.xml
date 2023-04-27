@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".views.addRemainder.AddRemainderMapsFragment">
+    tools:context=".views.addReminder.AddReminderMapsFragment">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/search_bar"
@@ -37,11 +37,21 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/add_reminder_map"
+        android:id="@+id/autocomplete_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+        app:layout_constraintTop_toBottomOf="@id/search_bar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/search_bar"
+        app:layout_constraintTop_toBottomOf="@id/autocomplete_fragment"
         app:layout_constraintLeft_toLeftOf="parent"
         />
 

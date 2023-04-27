@@ -1,4 +1,4 @@
-package com.example.remindertask.views.addRemainder
+package com.example.remindertask.views.addReminder
 
 import android.app.DatePickerDialog
 import android.os.Bundle

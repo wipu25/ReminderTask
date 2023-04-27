@@ -30,7 +30,7 @@
 
     <fragment
         android:id="@+id/add_reminder"
-        android:name="com.example.remindertask.views.addRemainder.FragmentAddReminder"
+        android:name="com.example.remindertask.views.addReminder.FragmentAddReminder"
         tools:layout="@layout/fragment_main"
         >
         <action
@@ -45,8 +45,8 @@
 
     <fragment
         android:id="@+id/add_reminder_map"
-        android:name="com.example.remindertask.views.addRemainder.AddRemainderMapsFragment"
-        tools:layout="@layout/fragment_add_remainder_maps"
+        android:name="com.example.remindertask.views.addReminder.AddReminderMapsFragment"
+        tools:layout="@layout/fragment_add_reminder_maps"
         >
         <action
             android:id="@+id/action_add_reminder_map_to_add_reminder"
