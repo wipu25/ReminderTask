@@ -3,7 +3,6 @@ package com.example.remindertask.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.remindertask.models.data.AddReminderForm
 import java.time.LocalDateTime
 
 class AddReminderViewModel : ViewModel() {
@@ -29,7 +28,7 @@ class AddReminderViewModel : ViewModel() {
         _endDateLiveDate.value = dateTime
     }
 
-    fun onSave(title: String,description: String,location :String) {
+    fun onSave(title: String, description: String, location: String) {
 
     }
 }

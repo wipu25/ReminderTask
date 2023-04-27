@@ -14,7 +14,6 @@ import com.example.remindertask.R
 import com.example.remindertask.databinding.FragmentAddReminderBinding
 import com.example.remindertask.databinding.TextFieldBinding
 import com.example.remindertask.viewmodel.AddReminderViewModel
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -84,7 +83,7 @@ class FragmentAddReminder : Fragment() {
 
         fieldBinding.setOnClickListener {
             val startDate = viewModel.startDateLiveData.value!!
-            displayDatePicker(startDate,LocalDateTime.now(), viewModel::setStartDate)
+            displayDatePicker(startDate, LocalDateTime.now(), viewModel::setStartDate)
         }
     }
 
@@ -102,7 +101,7 @@ class FragmentAddReminder : Fragment() {
         fieldBinding.setOnClickListener {
             val endDate = viewModel.endDateLiveData.value!!
             val startDate = viewModel.startDateLiveData.value!!
-            displayDatePicker(endDate,startDate, viewModel::setEndDate)
+            displayDatePicker(endDate, startDate, viewModel::setEndDate)
         }
     }
 
@@ -112,7 +111,11 @@ class FragmentAddReminder : Fragment() {
         field.isFocusable = false
     }
 
-    private fun displayDatePicker(dateHighlight: LocalDateTime,minDate: LocalDateTime,setDate: (newDate: LocalDateTime) -> Unit) {
+    private fun displayDatePicker(
+        dateHighlight: LocalDateTime,
+        minDate: LocalDateTime,
+        setDate: (newDate: LocalDateTime) -> Unit
+    ) {
         val datePicker = DatePickerDialog(
             this.requireContext(),
             R.style.DialogTheme,

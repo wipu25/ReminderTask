@@ -45,7 +45,7 @@
 
     <fragment
         android:id="@+id/add_reminder_map"
-        android:name="com.example.remindertask.AddRemainderMapsFragment"
+        android:name="com.example.remindertask.views.addRemainder.AddRemainderMapsFragment"
         tools:layout="@layout/fragment_add_remainder_maps"
         >
         <action
