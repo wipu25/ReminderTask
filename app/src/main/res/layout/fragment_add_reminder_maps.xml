@@ -6,42 +6,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".views.addReminder.AddReminderMapsFragment">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/search_bar"
+    <EditText
+        android:id="@+id/search_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="Type your location ..."
+        android:layout_margin="8dp"
+        android:padding="8dp"
+        android:background="@drawable/text_field"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:gravity="center"
-        android:padding="12dp">
-
-        <EditText
-            android:id="@+id/search_field"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Type your location ..."
-            android:padding="8dp"
-            android:layout_weight="1"
-            android:layout_marginRight="12dp"
-            android:background="@drawable/text_field"/>
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/search_btn"
-            android:layout_width="wrap_content"
-            android:layout_margin="1dp"
-            android:text="Search"
-            android:textColor="@color/black"
-            android:layout_height="wrap_content"
-            android:background="@drawable/second_btn"/>
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        app:layout_constraintLeft_toLeftOf="parent"/>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/autocomplete_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-        app:layout_constraintTop_toBottomOf="@id/search_bar"
+        app:layout_constraintTop_toBottomOf="@id/search_field"
         app:layout_constraintLeft_toLeftOf="parent"
         />
 
@@ -64,7 +45,7 @@
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/search_bar"
+        app:layout_constraintTop_toBottomOf="@id/search_field"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         />

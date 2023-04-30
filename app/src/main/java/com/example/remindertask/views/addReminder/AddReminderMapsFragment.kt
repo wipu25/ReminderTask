@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.remindertask.R
 import com.example.remindertask.databinding.FragmentAddReminderMapsBinding
 import com.google.android.gms.common.api.Status
@@ -45,13 +47,13 @@ class AddReminderMapsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentAddReminderMapsBinding.inflate(layoutInflater)
-        shouldDisplayMap()
-        Places.initialize(requireContext(),getString(R.string.api_key_google_map))
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        shouldDisplayMap()
+        Places.initialize(requireContext(),getString(R.string.api_key_google_map))
         val mapFragment =
             childFragmentManager.findFragmentById(binding.map.id) as SupportMapFragment?
         val autocompleteFragment = childFragmentManager.findFragmentById(binding.autocompleteFragment.id) as AutocompleteSupportFragment
@@ -65,9 +67,19 @@ class AddReminderMapsFragment : Fragment() {
                 Log.i("onError", "An error occurred: $status")
             }
         })
-
-
         mapFragment?.getMapAsync(callback)
+
+        initSearchField()
+    }
+
+    private fun initSearchField() {
+        val field = binding.searchField
+        field.showSoftInputOnFocus = false
+        field.inputType = InputType.TYPE_NULL
+        field.isFocusable = false
+        field.setOnClickListener {
+            this.findNavController().navigate(AddReminderMapsFragmentDirections.addMapToMapSearch())
+        }
     }
 
     private fun shouldDisplayMap() {
