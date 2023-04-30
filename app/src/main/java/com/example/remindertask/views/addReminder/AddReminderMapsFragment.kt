@@ -56,18 +56,18 @@ class AddReminderMapsFragment : Fragment() {
         Places.initialize(requireContext(),getString(R.string.api_key_google_map))
         val mapFragment =
             childFragmentManager.findFragmentById(binding.map.id) as SupportMapFragment?
-        val autocompleteFragment = childFragmentManager.findFragmentById(binding.autocompleteFragment.id) as AutocompleteSupportFragment
-        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME))
-        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-            override fun onPlaceSelected(place: Place) {
-                Log.i("onPlaceSelected", "Place: ${place.name}, ${place.id}")
-            }
-
-            override fun onError(status: Status) {
-                Log.i("onError", "An error occurred: $status")
-            }
-        })
-        mapFragment?.getMapAsync(callback)
+//        val autocompleteFragment = childFragmentManager.findFragmentById(binding.autocompleteFragment.id) as AutocompleteSupportFragment
+//        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME))
+//        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+//            override fun onPlaceSelected(place: Place) {
+//                Log.i("onPlaceSelected", "Place: ${place.name}, ${place.id}")
+//            }
+//
+//            override fun onError(status: Status) {
+//                Log.i("onError", "An error occurred: $status")
+//            }
+//        })
+//        mapFragment?.getMapAsync(callback)
 
         initSearchField()
     }

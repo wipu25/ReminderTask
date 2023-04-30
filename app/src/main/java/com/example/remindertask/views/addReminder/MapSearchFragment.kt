@@ -1,14 +1,17 @@
 package com.example.remindertask.views.addReminder
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
-import com.example.remindertask.MapSearchViewModel
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.example.remindertask.viewmodel.MapSearchViewModel
 import com.example.remindertask.databinding.FragmentMapSearchBinding
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.net.PlacesClient
+
 
 class MapSearchFragment : Fragment() {
 
@@ -19,13 +22,19 @@ class MapSearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = ViewModelProvider(this)[MapSearchViewModel::class.java]
+        viewModel = ViewModelProvider(this)[MapSearchViewModel(Places.createClient(requireContext()))::class.java]
         binding = FragmentMapSearchBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.searchEditText.doOnTextChanged { text, start, before, count ->  }
+        val searchItemRecyclerAdapter = MapSearchRecyclerAdapter()
+        binding.searchRecycler.adapter = searchItemRecyclerAdapter
+        binding.searchEditText.doOnTextChanged { text, _, _, _ ->
+            viewModel.searchPlaces(text.toString())
+        }
+        viewModel.resultLiveData.observe(viewLifecycleOwner) {
+        }
     }
 }
