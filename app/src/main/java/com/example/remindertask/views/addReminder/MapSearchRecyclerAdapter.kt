@@ -1,12 +1,15 @@
 package com.example.remindertask.views.addReminder
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.remindertask.databinding.MapSearchItemBinding
+import com.google.android.libraries.places.api.model.AutocompletePrediction
 
 class MapSearchRecyclerAdapter: RecyclerView.Adapter<MapSearchRecyclerAdapter.MapSearchItem>() {
 
+    var resultList: List<AutocompletePrediction> = listOf()
     class MapSearchItem(private val item: MapSearchItemBinding): RecyclerView.ViewHolder(item.root) {
         fun bind(head: String) {
             item.locationName.text = head
@@ -19,10 +22,15 @@ class MapSearchRecyclerAdapter: RecyclerView.Adapter<MapSearchRecyclerAdapter.Ma
     }
 
     override fun onBindViewHolder(holder: MapSearchItem, position: Int) {
-        holder.bind("sa")
+        holder.bind(resultList[position].getFullText(null).toString())
     }
 
     override fun getItemCount(): Int {
-       return 3
+       return resultList.size
+    }
+
+    fun updateList(resultList: List<AutocompletePrediction>) {
+        this.resultList = resultList
+        notifyItemRangeInserted(0,resultList.size)
     }
 }

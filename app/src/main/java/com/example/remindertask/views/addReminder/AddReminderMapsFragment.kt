@@ -14,26 +14,28 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.remindertask.R
 import com.example.remindertask.databinding.FragmentAddReminderMapsBinding
-import com.google.android.gms.common.api.Status
+import com.example.remindertask.viewmodel.MapSearchViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 
 class AddReminderMapsFragment : Fragment() {
 
     private lateinit var binding: FragmentAddReminderMapsBinding
+    private lateinit var viewModel: MapSearchViewModel
 
     private val callback = OnMapReadyCallback { googleMap ->
+        viewModel.resultLiveData.observe(viewLifecycleOwner){
+            if(it.isNotEmpty()){
+
+            }
+        }
         getLocation(googleMap)
         googleMap.setOnMapClickListener {
             googleMap.clear()
@@ -52,23 +54,11 @@ class AddReminderMapsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity())[MapSearchViewModel(requireActivity().application)::class.java]
         shouldDisplayMap()
-        Places.initialize(requireContext(),getString(R.string.api_key_google_map))
         val mapFragment =
             childFragmentManager.findFragmentById(binding.map.id) as SupportMapFragment?
-//        val autocompleteFragment = childFragmentManager.findFragmentById(binding.autocompleteFragment.id) as AutocompleteSupportFragment
-//        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME))
-//        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-//            override fun onPlaceSelected(place: Place) {
-//                Log.i("onPlaceSelected", "Place: ${place.name}, ${place.id}")
-//            }
-//
-//            override fun onError(status: Status) {
-//                Log.i("onError", "An error occurred: $status")
-//            }
-//        })
-//        mapFragment?.getMapAsync(callback)
-
+        mapFragment?.getMapAsync(callback)
         initSearchField()
     }
 
