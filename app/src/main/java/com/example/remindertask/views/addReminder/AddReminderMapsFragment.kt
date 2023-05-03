@@ -7,7 +7,6 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,13 +30,19 @@ class AddReminderMapsFragment : Fragment() {
     private lateinit var viewModel: MapSearchViewModel
 
     private val callback = OnMapReadyCallback { googleMap ->
-        viewModel.resultLiveData.observe(viewLifecycleOwner){
-
+        getCurrentLocation(googleMap)
+        viewModel.selectedLocation.observe(viewLifecycleOwner) {
+            if (it != null) {
+                binding.searchField.setText(it.address ?: "")
+                setLocation(googleMap, it.latLng!!)
+            }
         }
-        getLocation(googleMap)
         googleMap.setOnMapClickListener {
-            googleMap.clear()
-            googleMap.addMarker(MarkerOptions().position(it))
+            viewModel.setSelectedLocation(it)
+            googleMap.apply {
+                clear()
+                addMarker(MarkerOptions().position(it))
+            }
         }
     }
 
@@ -52,12 +57,18 @@ class AddReminderMapsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity())[MapSearchViewModel(requireActivity().application)::class.java]
+        viewModel =
+            ViewModelProvider(requireActivity())[MapSearchViewModel(requireActivity().application)::class.java]
         shouldDisplayMap()
         val mapFragment =
             childFragmentManager.findFragmentById(binding.map.id) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
         initSearchField()
+        binding.saveLocation.setOnClickListener {
+            this.findNavController().navigate(
+                AddReminderMapsFragmentDirections.actionAddReminderMapToAddReminder(viewModel.selectedLocation.value!!)
+            )
+        }
     }
 
     private fun initSearchField() {
@@ -97,16 +108,35 @@ class AddReminderMapsFragment : Fragment() {
         }
     }
 
-    private fun getLocation(googleMap: GoogleMap) {
-        val locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private fun getCurrentLocation(googleMap: GoogleMap) {
+        val locationManager =
+            requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val locationListener = LocationListener {
             val current = LatLng(it.latitude, it.longitude)
-            googleMap.addMarker(MarkerOptions().position(current).title("Marker in your current location"))
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(current))
+            setLocation(googleMap, current)
+            viewModel.setSelectedLocation(current)
         }
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-        {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000L,1f, locationListener)
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                1000L,
+                1f,
+                locationListener
+            )
+        }
+    }
+
+    private fun setLocation(googleMap: GoogleMap, latLng: LatLng) {
+        googleMap.apply {
+            addMarker(
+                MarkerOptions().position(latLng).title("Marker in your current location")
+            )
+            moveCamera(CameraUpdateFactory.newLatLng(latLng))
+            animateCamera(CameraUpdateFactory.zoomTo(11.0f))
         }
     }
 }

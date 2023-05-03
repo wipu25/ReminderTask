@@ -50,7 +50,11 @@
         >
         <action
             android:id="@+id/action_add_reminder_map_to_add_reminder"
-            app:destination="@id/add_reminder" />
+            app:destination="@id/add_reminder">
+            <argument
+                android:name="map_select"
+                app:argType="com.example.remindertask.models.data.SelectedLocation" />
+        </action>
         <action
             android:id="@+id/add_map_to_map_search"
             app:destination="@id/map_search"/>
@@ -60,6 +64,9 @@
         android:id="@+id/map_search"
         android:name="com.example.remindertask.views.addReminder.MapSearchFragment"
         tools:layout="@layout/fragment_map_search">
+        <action
+            android:id="@+id/map_search_to_add_map"
+            app:destination="@id/add_reminder_map"/>
     </fragment>
 
 </navigation>

@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.remindertask.R
 import com.example.remindertask.databinding.FragmentAddReminderBinding
 import com.example.remindertask.databinding.TextFieldBinding
+import com.example.remindertask.models.data.SelectedLocation
 import com.example.remindertask.viewmodel.AddReminderViewModel
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -59,6 +60,10 @@ class FragmentAddReminder : Fragment() {
 
     private fun initLocationField() {
         val locationField = binding.location.field
+        val locationData = arguments?.get("map_select")
+        if (locationData != null) {
+            locationField.setText((locationData as SelectedLocation).address)
+        }
         disableFieldSettings(locationField)
         locationField.setOnClickListener {
             this.findNavController().navigate(FragmentAddReminderDirections.addReminderToMap())
