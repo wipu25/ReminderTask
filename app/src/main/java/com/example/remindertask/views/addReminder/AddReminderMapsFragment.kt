@@ -32,9 +32,7 @@ class AddReminderMapsFragment : Fragment() {
 
     private val callback = OnMapReadyCallback { googleMap ->
         viewModel.resultLiveData.observe(viewLifecycleOwner){
-            if(it.isNotEmpty()){
 
-            }
         }
         getLocation(googleMap)
         googleMap.setOnMapClickListener {

@@ -2,12 +2,13 @@ package com.example.remindertask.views.addReminder
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.remindertask.databinding.MapSearchItemBinding
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 
-class MapSearchRecyclerAdapter: RecyclerView.Adapter<MapSearchRecyclerAdapter.MapSearchItem>() {
+class MapSearchRecyclerAdapter(private val onClickListener: OnClickListener): RecyclerView.Adapter<MapSearchRecyclerAdapter.MapSearchItem>() {
 
     var resultList: List<AutocompletePrediction> = listOf()
     class MapSearchItem(private val item: MapSearchItemBinding): RecyclerView.ViewHolder(item.root) {
@@ -22,6 +23,9 @@ class MapSearchRecyclerAdapter: RecyclerView.Adapter<MapSearchRecyclerAdapter.Ma
     }
 
     override fun onBindViewHolder(holder: MapSearchItem, position: Int) {
+        holder.itemView.setOnClickListener {
+            onClickListener.onClick(getItemId(position))
+        }
         holder.bind(resultList[position].getFullText(null).toString())
     }
 
