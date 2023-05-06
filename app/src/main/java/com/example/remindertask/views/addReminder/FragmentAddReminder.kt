@@ -7,8 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.Toast
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.fragment.findNavController
 import com.example.remindertask.R
 import com.example.remindertask.databinding.FragmentAddReminderBinding
@@ -20,6 +23,7 @@ import java.time.ZoneId
 
 class FragmentAddReminder : Fragment() {
     private lateinit var viewModel: AddReminderViewModel
+    private lateinit var viewModelStoreOwner: ViewModelStoreOwner
     private lateinit var binding: FragmentAddReminderBinding
     private lateinit var startDateBinding: TextFieldBinding
     private lateinit var endDateBinding: TextFieldBinding
@@ -30,7 +34,8 @@ class FragmentAddReminder : Fragment() {
     ): View {
         binding = FragmentAddReminderBinding.inflate(layoutInflater)
 
-        viewModel = ViewModelProvider(this)[AddReminderViewModel::class.java]
+        viewModel =
+            ViewModelProvider(requireActivity() as ViewModelStoreOwner)[AddReminderViewModel::class.java]
         startDateBinding = binding.startDate
         endDateBinding = binding.endDate
 
@@ -43,16 +48,26 @@ class FragmentAddReminder : Fragment() {
         initEndDateField()
         initLocationField()
 
+        binding.title.field.setText(viewModel.titleLiveData.value)
+        binding.description.field.setText(viewModel.descriptionLiveData.value)
+
+        binding.title.field.doOnTextChanged { title, _, _, _ ->
+            viewModel.setTitle(title.toString())
+        }
+
+        binding.description.field.doOnTextChanged { description, _, _, _ ->
+            viewModel.setDescription(description.toString())
+        }
+
         binding.cancel.setOnClickListener {
             this.findNavController().navigate(FragmentAddReminderDirections.addReminderToMain())
         }
 
         binding.save.setOnClickListener {
-            viewModel.onSave(
-                title = binding.title.field.text.toString(),
-                description = binding.description.field.text.toString(),
-                location = binding.location.field.text.toString()
-            )
+            viewModel.onSave()
+            Toast.makeText(this.context, "Successfully save new reminder", Toast.LENGTH_SHORT)
+                .show()
+            this.findNavController().navigate(FragmentAddReminderDirections.addReminderToMain())
         }
 
         return binding.root
@@ -62,7 +77,9 @@ class FragmentAddReminder : Fragment() {
         val locationField = binding.location.field
         val locationData = arguments?.get("map_select")
         if (locationData != null) {
-            locationField.setText((locationData as SelectedLocation).address)
+            val selectedLocation = locationData as SelectedLocation
+            viewModel.setLocation(selectedLocation)
+            locationField.setText(selectedLocation.address)
         }
         disableFieldSettings(locationField)
         locationField.setOnClickListener {
