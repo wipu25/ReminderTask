@@ -10,8 +10,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.remindertask.R
 import com.example.remindertask.databinding.FragmentAddReminderBinding
@@ -22,8 +21,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 
 class FragmentAddReminder : Fragment() {
-    private lateinit var viewModel: AddReminderViewModel
-    private lateinit var viewModelStoreOwner: ViewModelStoreOwner
+    private val viewModel: AddReminderViewModel by viewModels { AddReminderViewModel.Factory }
     private lateinit var binding: FragmentAddReminderBinding
     private lateinit var startDateBinding: TextFieldBinding
     private lateinit var endDateBinding: TextFieldBinding
@@ -33,9 +31,6 @@ class FragmentAddReminder : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentAddReminderBinding.inflate(layoutInflater)
-
-        viewModel =
-            ViewModelProvider(requireActivity() as ViewModelStoreOwner)[AddReminderViewModel::class.java]
         startDateBinding = binding.startDate
         endDateBinding = binding.endDate
 
@@ -50,13 +45,24 @@ class FragmentAddReminder : Fragment() {
 
         binding.title.field.setText(viewModel.titleLiveData.value)
         binding.description.field.setText(viewModel.descriptionLiveData.value)
-
         binding.title.field.doOnTextChanged { title, _, _, _ ->
             viewModel.setTitle(title.toString())
+            val error = viewModel.checkTitleValue()
+            if (error != null) {
+                binding.title.field.error = error
+                return@doOnTextChanged
+            }
+            binding.title.field.error = null
         }
 
         binding.description.field.doOnTextChanged { description, _, _, _ ->
             viewModel.setDescription(description.toString())
+            val error = viewModel.checkDescriptionValue()
+            if (error != null) {
+                binding.description.field.error = error
+                return@doOnTextChanged
+            }
+            binding.description.field.error = null
         }
 
         binding.cancel.setOnClickListener {
@@ -64,6 +70,26 @@ class FragmentAddReminder : Fragment() {
         }
 
         binding.save.setOnClickListener {
+            val titleError = viewModel.checkTitleValue()
+            val descriptionError = viewModel.checkDescriptionValue()
+            if (titleError != null) {
+                binding.title.field.error = titleError
+                Toast.makeText(this.context, "Title field are empty please add", Toast.LENGTH_SHORT)
+                    .show()
+                return@setOnClickListener
+            }
+
+            if (descriptionError != null) {
+                binding.description.field.error = descriptionError
+                Toast.makeText(
+                    this.context,
+                    "Description field are empty please add",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+                return@setOnClickListener
+            }
+
             viewModel.onSave()
             Toast.makeText(this.context, "Successfully save new reminder", Toast.LENGTH_SHORT)
                 .show()

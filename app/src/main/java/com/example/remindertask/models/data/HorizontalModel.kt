@@ -1,5 +1,7 @@
 package com.example.remindertask.models
 
+import com.example.remindertask.models.data.ReminderForm
+
 enum class Type { horizontal, vertical }
 
 abstract class RecyclerItem {
@@ -13,7 +15,7 @@ data class HorizontalModel(
 }
 
 data class VerticalItem(
-    val name: String
+    val reminderForm: ReminderForm
 ) : RecyclerItem() {
     override var type: Type = Type.vertical
 }

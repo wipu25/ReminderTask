@@ -10,9 +10,13 @@ import com.example.remindertask.models.HorizontalModel
 import com.example.remindertask.models.RecyclerItem
 import com.example.remindertask.models.Type
 import com.example.remindertask.models.VerticalItem
+import com.example.remindertask.models.data.ReminderForm
+import java.time.format.DateTimeFormatter
 
-class RecyclerAdapter(private val recyclerList: List<RecyclerItem>) :
+class RecyclerAdapter :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    var recyclerList: List<RecyclerItem> = listOf()
 
     private object Const {
         const val HORIZONTAL = 0 // random unique value
@@ -28,8 +32,10 @@ class RecyclerAdapter(private val recyclerList: List<RecyclerItem>) :
 
     class VerticalHolder(private val recyclerItem: RecyclerItemBinding) :
         RecyclerView.ViewHolder(recyclerItem.root) {
-        fun bind(text: String) {
-            recyclerItem.text.text = text
+        fun bind(reminderForm: ReminderForm) {
+            val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            recyclerItem.text.text = reminderForm.title
+            recyclerItem.description.text = reminderForm.description
         }
     }
 
@@ -58,7 +64,7 @@ class RecyclerAdapter(private val recyclerList: List<RecyclerItem>) :
             layoutParams.isFullSpan = true
             (holder as HorizontalHolder).bind((recyclerList[position] as HorizontalModel).list)
         } else {
-            (holder as VerticalHolder).bind((recyclerList[position] as VerticalItem).name)
+            (holder as VerticalHolder).bind((recyclerList[position] as VerticalItem).reminderForm)
         }
     }
 
