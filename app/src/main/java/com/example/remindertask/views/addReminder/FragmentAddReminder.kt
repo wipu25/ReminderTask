@@ -1,6 +1,7 @@
 package com.example.remindertask.views.addReminder
 
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
@@ -34,35 +35,54 @@ class FragmentAddReminder : Fragment() {
         startDateBinding = binding.startDate
         endDateBinding = binding.endDate
 
-        initTextField(binding.title, "Remainder Title", "Grocery")
-        initTextField(binding.description, "Remainder Description", "Don't Forget to buy milk")
+        val titleForm = binding.title
+        val titleFormField = titleForm.field
+
+        val descriptionForm = binding.description
+        val descriptionFormField = descriptionForm.field
+
+        initTextField(titleForm, "Remainder Title", "Grocery")
+        initTextField(descriptionForm, "Remainder Description", "Don't Forget to buy milk")
         initTextField(binding.location, "Remainder Location", "Bangkok")
         initTextField(startDateBinding, "Start Date", "2/12/2022")
         initTextField(endDateBinding, "End Date", "4/12/2022")
+        initTextField(binding.alertField, "Alert notification time", "12.00")
         initStartDateField()
         initEndDateField()
         initLocationField()
+        initAlertField()
 
-        binding.title.field.setText(viewModel.titleLiveData.value)
-        binding.description.field.setText(viewModel.descriptionLiveData.value)
-        binding.title.field.doOnTextChanged { title, _, _, _ ->
+        binding.switchAlert.setOnClickListener {
+            viewModel.toggleAlertField()
+        }
+        viewModel.displayAlertField.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.alertField.root.visibility = View.VISIBLE
+            } else {
+                binding.alertField.root.visibility = View.GONE
+            }
+        }
+
+        titleFormField.setText(viewModel.titleLiveData.value)
+        titleFormField.doOnTextChanged { title, _, _, _ ->
             viewModel.setTitle(title.toString())
             val error = viewModel.checkTitleValue()
             if (error != null) {
-                binding.title.field.error = error
+                titleFormField.error = error
                 return@doOnTextChanged
             }
-            binding.title.field.error = null
+            titleFormField.error = null
         }
 
-        binding.description.field.doOnTextChanged { description, _, _, _ ->
+        descriptionFormField.setText(viewModel.descriptionLiveData.value)
+        descriptionFormField.doOnTextChanged { description, _, _, _ ->
             viewModel.setDescription(description.toString())
             val error = viewModel.checkDescriptionValue()
             if (error != null) {
-                binding.description.field.error = error
+                descriptionFormField.error = error
                 return@doOnTextChanged
             }
-            binding.description.field.error = null
+            descriptionFormField.error = null
         }
 
         binding.cancel.setOnClickListener {
@@ -73,14 +93,14 @@ class FragmentAddReminder : Fragment() {
             val titleError = viewModel.checkTitleValue()
             val descriptionError = viewModel.checkDescriptionValue()
             if (titleError != null) {
-                binding.title.field.error = titleError
+                titleFormField.error = titleError
                 Toast.makeText(this.context, "Title field are empty please add", Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
 
             if (descriptionError != null) {
-                binding.description.field.error = descriptionError
+                descriptionFormField.error = descriptionError
                 Toast.makeText(
                     this.context,
                     "Description field are empty please add",
@@ -153,6 +173,20 @@ class FragmentAddReminder : Fragment() {
         }
     }
 
+    private fun initAlertField() {
+        val fieldBinding = binding.alertField.field
+        disableFieldSettings(fieldBinding)
+
+        viewModel.alertTimeLiveDate.observe(viewLifecycleOwner) {
+            binding.alertField.field.setText("${it.hour}:${it.minute}")
+        }
+
+        fieldBinding.setOnClickListener {
+            val alertTime = viewModel.alertTimeLiveDate.value
+            timePicker(alertTime?.hour ?: 0, alertTime?.minute ?: 0)
+        }
+    }
+
     private fun disableFieldSettings(field: EditText) {
         field.showSoftInputOnFocus = false
         field.inputType = InputType.TYPE_NULL
@@ -178,5 +212,12 @@ class FragmentAddReminder : Fragment() {
         datePicker.datePicker.minDate =
             minDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         datePicker.show()
+    }
+
+    private fun timePicker(setHour: Int, setMinute: Int) {
+        val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
+            viewModel.setAlertTime(hour, minute)
+        }
+        TimePickerDialog(requireContext(), timeSetListener, setHour, setMinute, true).show()
     }
 }

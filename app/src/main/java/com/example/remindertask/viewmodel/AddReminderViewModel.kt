@@ -3,12 +3,14 @@ package com.example.remindertask.viewmodel
 import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.remindertask.MainApplication
+import com.example.remindertask.models.data.AlertTime
 import com.example.remindertask.models.data.ReminderForm
 import com.example.remindertask.models.data.SelectedLocation
 import com.example.remindertask.models.repo.DatabaseRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import java.util.*
 
 class AddReminderViewModel(private val reminderRepository: DatabaseRepository) : ViewModel() {
 
@@ -28,6 +30,8 @@ class AddReminderViewModel(private val reminderRepository: DatabaseRepository) :
         }
     }
 
+    private val _calendar = Calendar.getInstance()
+
     private val _startDateLiveDate: MutableLiveData<LocalDateTime> =
         MutableLiveData(LocalDateTime.now())
     private val _endDateLiveDate: MutableLiveData<LocalDateTime> =
@@ -36,16 +40,26 @@ class AddReminderViewModel(private val reminderRepository: DatabaseRepository) :
     private val _descriptionLiveData: MutableLiveData<String> = MutableLiveData("")
     private val _locationLiveData: MutableLiveData<SelectedLocation> =
         MutableLiveData(SelectedLocation())
+    private val _displayAlertField: MutableLiveData<Boolean> = MutableLiveData(false)
+    private val _alertTimeLiveDate: MutableLiveData<AlertTime> = MutableLiveData(
+        AlertTime(
+            hour = _calendar.get(Calendar.HOUR_OF_DAY),
+            minute = _calendar.get(Calendar.MINUTE)
+        )
+    )
 
     val startDateLiveData: LiveData<LocalDateTime>
         get() = _startDateLiveDate
-
     val endDateLiveData: LiveData<LocalDateTime>
         get() = _endDateLiveDate
     val titleLiveData: LiveData<String>
         get() = _titleLiveData
     val descriptionLiveData: LiveData<String>
         get() = _descriptionLiveData
+    val displayAlertField: LiveData<Boolean>
+        get() = _displayAlertField
+    val alertTimeLiveDate: LiveData<AlertTime>
+        get() = _alertTimeLiveDate
 
     fun setStartDate(dateTime: LocalDateTime) {
         _startDateLiveDate.value = dateTime
@@ -59,16 +73,15 @@ class AddReminderViewModel(private val reminderRepository: DatabaseRepository) :
     }
 
     fun onSave() {
-        val a = ReminderForm(
-            title = _titleLiveData.value!!,
-            description = _descriptionLiveData.value!!,
-            location = _locationLiveData.value!!,
-            startDate = _startDateLiveDate.value!!,
-            endDate = _endDateLiveDate.value!!
-        )
-
         viewModelScope.launch(Dispatchers.IO) {
-            reminderRepository.insetReminder(a)
+            reminderRepository.insetReminder(ReminderForm(
+                title = _titleLiveData.value ?: "",
+                description = _descriptionLiveData.value ?: "",
+                location = _locationLiveData.value,
+                startDate = _startDateLiveDate.value,
+                endDate = _endDateLiveDate.value,
+                alertTime = _alertTimeLiveDate.value
+            ))
         }
     }
 
@@ -102,5 +115,13 @@ class AddReminderViewModel(private val reminderRepository: DatabaseRepository) :
 
     fun setLocation(location: SelectedLocation) {
         _locationLiveData.value = location
+    }
+
+    fun toggleAlertField() {
+        _displayAlertField.value = !_displayAlertField.value!!
+    }
+
+    fun setAlertTime(hour: Int?, minute: Int?) {
+        _alertTimeLiveDate.value = AlertTime(hour, minute)
     }
 }

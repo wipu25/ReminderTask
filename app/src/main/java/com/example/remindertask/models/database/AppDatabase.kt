@@ -5,12 +5,17 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.remindertask.models.data.AlertTimeConverter
 import com.example.remindertask.models.data.DateTimeConverter
 import com.example.remindertask.models.data.ReminderForm
 import com.example.remindertask.models.data.SelectedLocationConverter
 
 @Database(entities = [ReminderForm::class], version = 3)
-@TypeConverters(SelectedLocationConverter::class, DateTimeConverter::class)
+@TypeConverters(
+    SelectedLocationConverter::class,
+    DateTimeConverter::class,
+    AlertTimeConverter::class
+)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun addReminderDao(): AddReminderDao
 

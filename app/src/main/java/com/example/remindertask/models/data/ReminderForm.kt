@@ -11,11 +11,12 @@ import java.time.ZoneOffset
 @Entity
 data class ReminderForm(
     @PrimaryKey(autoGenerate = true) val uid: Int = 0,
-    @ColumnInfo(name = "title") var title: String = "",
-    @ColumnInfo(name = "description") var description: String = "",
-    @ColumnInfo(name = "location") var location: SelectedLocation,
-    @ColumnInfo(name = "start_date") var startDate: LocalDateTime? = null,
-    @ColumnInfo(name = "end_date") var endDate: LocalDateTime? = null
+    @ColumnInfo(name = "title") var title: String,
+    @ColumnInfo(name = "description") var description: String,
+    @ColumnInfo(name = "location") var location: SelectedLocation?,
+    @ColumnInfo(name = "start_date") var startDate: LocalDateTime?,
+    @ColumnInfo(name = "end_date") var endDate: LocalDateTime?,
+    @ColumnInfo(name = "alert_time") var alertTime: AlertTime?
 )
 
 class DateTimeConverter {

@@ -47,13 +47,46 @@
             app:layout_constraintLeft_toLeftOf="parent"
             />
 
+        <LinearLayout
+            app:layout_constraintTop_toBottomOf="@id/location"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:id="@+id/alert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Alert for reminder"
+                />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_alert"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/alert_field"
+            layout="@layout/text_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/alert"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/start_date"
+            android:visibility="gone"
+            />
+
         <include
             android:id="@+id/start_date"
             layout="@layout/text_field"
             android:layout_width="0dp"
             android:layout_marginRight="8dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/location"
+            app:layout_constraintTop_toBottomOf="@id/alert_field"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/end_date"
             />
@@ -64,7 +97,7 @@
             android:layout_width="0dp"
             android:layout_marginLeft="8dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/location"
+            app:layout_constraintTop_toBottomOf="@id/alert_field"
             app:layout_constraintLeft_toRightOf="@id/start_date"
             app:layout_constraintRight_toRightOf="parent"
             />
