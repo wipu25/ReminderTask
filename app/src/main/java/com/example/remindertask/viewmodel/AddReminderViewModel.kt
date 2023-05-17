@@ -1,18 +1,24 @@
 package com.example.remindertask.viewmodel
 
+import android.app.*
+import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.remindertask.MainApplication
 import com.example.remindertask.models.data.AlertTime
 import com.example.remindertask.models.data.ReminderForm
 import com.example.remindertask.models.data.SelectedLocation
-import com.example.remindertask.models.repo.DatabaseRepository
+import com.example.remindertask.models.repo.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import java.util.*
 
-class AddReminderViewModel(private val reminderRepository: DatabaseRepository) : ViewModel() {
+class AddReminderViewModel(private val reminderRepository: DatabaseRepository,private val application: Application) : AndroidViewModel(application) {
 
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
@@ -24,7 +30,7 @@ class AddReminderViewModel(private val reminderRepository: DatabaseRepository) :
                 val application =
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
                 return AddReminderViewModel(
-                    (application as MainApplication).reminderRepository
+                    (application as MainApplication).reminderRepository,application
                 ) as T
             }
         }
@@ -43,8 +49,8 @@ class AddReminderViewModel(private val reminderRepository: DatabaseRepository) :
     private val _displayAlertField: MutableLiveData<Boolean> = MutableLiveData(false)
     private val _alertTimeLiveDate: MutableLiveData<AlertTime> = MutableLiveData(
         AlertTime(
-            hour = _calendar.get(Calendar.HOUR_OF_DAY),
-            minute = _calendar.get(Calendar.MINUTE)
+            _calendar.get(Calendar.HOUR_OF_DAY),
+            _calendar.get(Calendar.MINUTE)
         )
     )
 
@@ -74,7 +80,7 @@ class AddReminderViewModel(private val reminderRepository: DatabaseRepository) :
 
     fun onSave() {
         viewModelScope.launch(Dispatchers.IO) {
-            reminderRepository.insetReminder(ReminderForm(
+            val primaryKey = reminderRepository.insetReminder(ReminderForm(
                 title = _titleLiveData.value ?: "",
                 description = _descriptionLiveData.value ?: "",
                 location = _locationLiveData.value,
@@ -82,6 +88,9 @@ class AddReminderViewModel(private val reminderRepository: DatabaseRepository) :
                 endDate = _endDateLiveDate.value,
                 alertTime = _alertTimeLiveDate.value
             ))
+            if(_displayAlertField.value == true) {
+                scheduleNotification(primaryKey.first().toInt())
+            }
         }
     }
 
@@ -123,5 +132,36 @@ class AddReminderViewModel(private val reminderRepository: DatabaseRepository) :
 
     fun setAlertTime(hour: Int?, minute: Int?) {
         _alertTimeLiveDate.value = AlertTime(hour, minute)
+    }
+
+    fun createNotification() {
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(channelID,"chanel",importance)
+        channel.description = "Description"
+        val notificationManager = application.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+    }
+
+    private fun scheduleNotification(primaryKey: Int)
+    {
+        val intent = Intent(application.applicationContext, NotificationRepository::class.java)
+        val title = _titleLiveData.value
+        val message = _descriptionLiveData.value
+        intent.putExtra(titleExtra, title)
+        intent.putExtra(messageExtra, message)
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            application.applicationContext,
+            primaryKey,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val alarmManager = application.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val time = LocalDateTime.of(_startDateLiveDate.value?.toLocalDate(), LocalTime.of(_alertTimeLiveDate.value?.hour!!,_alertTimeLiveDate.value?.minute!!))
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+            pendingIntent
+        )
     }
 }

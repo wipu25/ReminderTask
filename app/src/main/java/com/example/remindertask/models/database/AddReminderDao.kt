@@ -12,8 +12,8 @@ interface AddReminderDao {
     fun getByPrimaryKey(uid: Int): List<ReminderForm>
 
     @Insert
-    fun insert(vararg addReminderForm: ReminderForm)
+    fun insert(vararg addReminderForm: ReminderForm): List<Long>
 
-    @Delete
-    fun delete(addReminderForm: ReminderForm)
+    @Query("DELETE FROM ReminderForm WHERE uid = :uid")
+    fun delete(uid: Int)
 }

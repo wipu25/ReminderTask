@@ -4,9 +4,9 @@ import com.example.remindertask.models.data.ReminderForm
 import com.example.remindertask.models.database.AddReminderDao
 
 class DatabaseRepository(private val addReminderDao: AddReminderDao) {
-    fun insetReminder(addReminderForm: ReminderForm) = addReminderDao.insert(addReminderForm)
+    fun insetReminder(addReminderForm: ReminderForm) : List<Long> = addReminderDao.insert(addReminderForm)
 
-    fun deleteReminder(removeReminderForm: ReminderForm) = addReminderDao.delete(removeReminderForm)
+    fun deleteReminder(uid: Int) = addReminderDao.delete(uid)
 
     fun getReminder(uid: Int) = addReminderDao.getByPrimaryKey(uid)
 

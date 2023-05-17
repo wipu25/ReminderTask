@@ -35,4 +35,11 @@ class MainViewModel(private val reminderRepository: DatabaseRepository) : ViewMo
             _allReminder.postValue(reminderRepository.getAll())
         }
     }
+
+    fun removeItem(uid: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            reminderRepository.deleteReminder(uid)
+            _allReminder.postValue(reminderRepository.getAll())
+        }
+    }
 }

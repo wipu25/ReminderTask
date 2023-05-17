@@ -29,8 +29,3 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
     }
 }
-
-class MainApplication : Application() {
-    private val database by lazy { AppDatabase.getDatabase(this) }
-    val reminderRepository by lazy { DatabaseRepository(database.addReminderDao()) }
-}

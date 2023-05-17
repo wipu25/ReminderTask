@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/main"
-        android:name="com.example.remindertask.views.FragmentMain"
+        android:name="com.example.remindertask.views.main.FragmentMain"
         tools:layout="@layout/fragment_main"
         >
         <action

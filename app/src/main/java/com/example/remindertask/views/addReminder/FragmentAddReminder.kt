@@ -1,7 +1,12 @@
 package com.example.remindertask.views.addReminder
 
+import android.app.AlarmManager
 import android.app.DatePickerDialog
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.TimePickerDialog
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
@@ -9,6 +14,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.getSystemService
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,8 +24,13 @@ import com.example.remindertask.R
 import com.example.remindertask.databinding.FragmentAddReminderBinding
 import com.example.remindertask.databinding.TextFieldBinding
 import com.example.remindertask.models.data.SelectedLocation
+import com.example.remindertask.models.repo.NotificationRepository
+import com.example.remindertask.models.repo.messageExtra
+import com.example.remindertask.models.repo.notificationID
+import com.example.remindertask.models.repo.titleExtra
 import com.example.remindertask.viewmodel.AddReminderViewModel
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
 
 class FragmentAddReminder : Fragment() {
@@ -34,6 +46,7 @@ class FragmentAddReminder : Fragment() {
         binding = FragmentAddReminderBinding.inflate(layoutInflater)
         startDateBinding = binding.startDate
         endDateBinding = binding.endDate
+        viewModel.createNotification()
 
         val titleForm = binding.title
         val titleFormField = titleForm.field
@@ -111,6 +124,7 @@ class FragmentAddReminder : Fragment() {
             }
 
             viewModel.onSave()
+//            scheduleNotification()
             Toast.makeText(this.context, "Successfully save new reminder", Toast.LENGTH_SHORT)
                 .show()
             this.findNavController().navigate(FragmentAddReminderDirections.addReminderToMain())

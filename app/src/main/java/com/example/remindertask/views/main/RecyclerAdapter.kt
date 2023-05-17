@@ -13,7 +13,7 @@ import com.example.remindertask.models.VerticalItem
 import com.example.remindertask.models.data.ReminderForm
 import java.time.format.DateTimeFormatter
 
-class RecyclerAdapter :
+class RecyclerAdapter(private val onPressCallback: (reminderForm: ReminderForm) -> Unit,private val removeItem: (uid: Int) -> Unit):
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var recyclerList: List<RecyclerItem> = listOf()
@@ -30,12 +30,19 @@ class RecyclerAdapter :
         }
     }
 
-    class VerticalHolder(private val recyclerItem: RecyclerItemBinding) :
+    class VerticalHolder(private val recyclerItem: RecyclerItemBinding,
+                         private val onPressCallback: (reminderForm: ReminderForm) -> Unit,
+                         private val removeItem: (uid: Int) -> Unit) :
         RecyclerView.ViewHolder(recyclerItem.root) {
         fun bind(reminderForm: ReminderForm) {
-            val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
             recyclerItem.text.text = reminderForm.title
             recyclerItem.description.text = reminderForm.description
+            recyclerItem.root.setOnClickListener{
+                onPressCallback(reminderForm)
+            }
+            recyclerItem.bin.setOnClickListener {
+                removeItem(reminderForm.uid)
+            }
         }
     }
 
@@ -50,7 +57,7 @@ class RecyclerAdapter :
         } else {
             val itemBinding =
                 RecyclerItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            VerticalHolder(itemBinding)
+            VerticalHolder(itemBinding,onPressCallback,removeItem)
         }
     }
 
