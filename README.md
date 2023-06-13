@@ -13,6 +13,8 @@ Reminder task use folowing architecture and plugin
 3. Room Database
 4. Coroutines
 5. Broadcast receiver
+6. Navigation Component
+7. viewBinding
 
 ## Screen
 Reminder task provide
