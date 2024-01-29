@@ -41,18 +41,21 @@ class SlideShow : Fragment() {
                 description.text = "Reminding task app it just a normal reminder"
                 image.setImageResource(R.drawable.idea_bulb)
             }
+
             1 -> {
                 text.text = "Alert"
                 description.text =
                     "We will alert you for what task don't forget to turn on the notifications"
                 image.setImageResource(R.drawable.notification)
             }
+
             2 -> {
                 text.text = "Track"
                 description.text =
                     "We let you check what you have complete and ignore what you not. Feel free to be impress and guilt for your progress"
                 image.setImageResource(R.drawable.sticky_notes)
             }
+
             else -> {
                 text.text = "Ooops"
                 description.text = "Something went wrong please restart the apps"

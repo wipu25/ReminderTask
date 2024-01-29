@@ -10,11 +10,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.remindertask.data.models.data.ReminderForm
 import com.example.remindertask.databinding.FragmentMainBinding
 import com.example.remindertask.databinding.ReminderDialogBinding
 import com.example.remindertask.models.HorizontalModel
 import com.example.remindertask.models.VerticalItem
-import com.example.remindertask.data.models.data.ReminderForm
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.MarkerOptions
@@ -33,16 +33,18 @@ class HomeFragment : Fragment() {
 
 
         binding = FragmentMainBinding.inflate(inflater, container, false)
-        val recyclerAdapter = HomeRecyclerAdapter(::displayDialog,homeViewModel::removeItem)
+        val recyclerAdapter = HomeRecyclerAdapter(::displayDialog, homeViewModel::removeItem)
         recyclerAdapter.recyclerList = listOf(HorizontalModel(listOf<String>("a", "b", "c")))
 
         recyclerAdapter.notifyItemInserted(0)
 
         homeViewModel.allReminder.observe(viewLifecycleOwner) { it ->
-            recyclerAdapter.recyclerList = listOf(recyclerAdapter.recyclerList[0]) +  it.map { e -> VerticalItem(e) }.toList()
-            if(homeViewModel.removeIndex != null) {
+            recyclerAdapter.recyclerList =
+                listOf(recyclerAdapter.recyclerList[0]) + it.map { e -> VerticalItem(e) }.toList()
+            if (homeViewModel.removeIndex != null) {
                 recyclerAdapter.notifyItemRemoved(homeViewModel.removeIndex!!)
-                Toast.makeText(this.context, "Successfully remove reminder", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this.context, "Successfully remove reminder", Toast.LENGTH_SHORT)
+                    .show()
             } else {
                 recyclerAdapter.notifyItemRangeInserted(recyclerAdapter.recyclerList.size, it.size)
             }
@@ -58,7 +60,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun displayDialog(reminderForm: ReminderForm) {
-        val bind :ReminderDialogBinding = ReminderDialogBinding.inflate(layoutInflater)
+        val bind: ReminderDialogBinding = ReminderDialogBinding.inflate(layoutInflater)
         val dialog = Dialog(requireActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(true)
@@ -71,14 +73,15 @@ class HomeFragment : Fragment() {
         bind.startDate.text = reminderForm.startDate?.format(dateTimeFormatter)
         bind.endDate.text = reminderForm.endDate?.format(dateTimeFormatter)
 
-        if(reminderForm.alertTime != null) {
-            bind.alert.text = "Alert Time: ${reminderForm.alertTime!!.hour} : ${reminderForm.alertTime!!.minute}"
+        if (reminderForm.alertTime != null) {
+            bind.alert.text =
+                "Alert Time: ${reminderForm.alertTime!!.hour} : ${reminderForm.alertTime!!.minute}"
             bind.alert.visibility = View.VISIBLE
             bind.switchAlert.visibility = View.VISIBLE
         }
         dialog.show()
 
-        if(reminderForm.location != null) {
+        if (reminderForm.location != null) {
             bind.locationAddr.visibility = View.VISIBLE
             bind.map.visibility = View.VISIBLE
             bind.locationAddr.text = reminderForm.location?.address
@@ -88,10 +91,11 @@ class HomeFragment : Fragment() {
             mapFragment?.onResume()
             mapFragment?.getMapAsync { googleMap ->
                 val latLng = reminderForm.location!!.latLng
-                if(latLng != null) {
+                if (latLng != null) {
                     googleMap.apply {
                         addMarker(
-                            MarkerOptions().position(latLng).title("Marker in your current location")
+                            MarkerOptions().position(latLng)
+                                .title("Marker in your current location")
                         )
                         moveCamera(CameraUpdateFactory.newLatLng(latLng))
                         animateCamera(CameraUpdateFactory.zoomTo(12.0f))

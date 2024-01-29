@@ -7,16 +7,15 @@ import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.example.remindertask.presentation.BaseApplication
 import com.example.remindertask.data.models.data.AlertTime
 import com.example.remindertask.data.models.data.ReminderForm
 import com.example.remindertask.data.models.data.SelectedLocation
-import com.example.remindertask.models.repo.*
 import com.example.remindertask.data.source.repo.DatabaseRepository
 import com.example.remindertask.data.source.repo.NotificationRepository
 import com.example.remindertask.data.source.repo.channelID
 import com.example.remindertask.data.source.repo.messageExtra
 import com.example.remindertask.data.source.repo.titleExtra
+import com.example.remindertask.presentation.BaseApplication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -24,12 +23,16 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.util.*
 
-class AddReminderViewModel(private val reminderRepository: DatabaseRepository, private val application: Application) : AndroidViewModel(application) {
+class AddReminderViewModel(
+    private val reminderRepository: DatabaseRepository,
+    private val application: Application
+) : AndroidViewModel(application) {
 
     override fun onCleared() {
         Log.d("onCleared", "why tho")
         super.onCleared()
     }
+
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
@@ -40,7 +43,7 @@ class AddReminderViewModel(private val reminderRepository: DatabaseRepository, p
                 val application =
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
                 return AddReminderViewModel(
-                    (application as BaseApplication).reminderRepository,application
+                    (application as BaseApplication).reminderRepository, application
                 ) as T
             }
         }
@@ -92,15 +95,15 @@ class AddReminderViewModel(private val reminderRepository: DatabaseRepository, p
         viewModelScope.launch(Dispatchers.IO) {
             val primaryKey = reminderRepository.insetReminder(
                 ReminderForm(
-                title = _titleLiveData.value ?: "",
-                description = _descriptionLiveData.value ?: "",
-                location = _locationLiveData.value,
-                startDate = _startDateLiveDate.value,
-                endDate = _endDateLiveDate.value,
-                alertTime = _alertTimeLiveDate.value
+                    title = _titleLiveData.value ?: "",
+                    description = _descriptionLiveData.value ?: "",
+                    location = _locationLiveData.value,
+                    startDate = _startDateLiveDate.value,
+                    endDate = _endDateLiveDate.value,
+                    alertTime = _alertTimeLiveDate.value
+                )
             )
-            )
-            if(_displayAlertField.value == true) {
+            if (_displayAlertField.value == true) {
                 createNotification()
                 scheduleNotification(primaryKey.first().toInt())
             }
@@ -149,15 +152,15 @@ class AddReminderViewModel(private val reminderRepository: DatabaseRepository, p
 
     private fun createNotification() {
         val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel(channelID,"chanel",importance)
+        val channel = NotificationChannel(channelID, "chanel", importance)
         channel.description = "Description"
-        val notificationManager = application.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            application.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
 
     @SuppressLint("ScheduleExactAlarm")
-    private fun scheduleNotification(primaryKey: Int)
-    {
+    private fun scheduleNotification(primaryKey: Int) {
         val intent = Intent(application.applicationContext, NotificationRepository::class.java)
         val title = _titleLiveData.value
         val message = _descriptionLiveData.value
@@ -171,7 +174,10 @@ class AddReminderViewModel(private val reminderRepository: DatabaseRepository, p
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         val alarmManager = application.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val time = LocalDateTime.of(_startDateLiveDate.value?.toLocalDate(), LocalTime.of(_alertTimeLiveDate.value?.hour!!,_alertTimeLiveDate.value?.minute!!))
+        val time = LocalDateTime.of(
+            _startDateLiveDate.value?.toLocalDate(),
+            LocalTime.of(_alertTimeLiveDate.value?.hour!!, _alertTimeLiveDate.value?.minute!!)
+        )
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),

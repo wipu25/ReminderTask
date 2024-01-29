@@ -15,9 +15,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.remindertask.R
+import com.example.remindertask.data.models.data.SelectedLocation
 import com.example.remindertask.databinding.FragmentAddReminderBinding
 import com.example.remindertask.databinding.TextFieldBinding
-import com.example.remindertask.data.models.data.SelectedLocation
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -91,8 +91,8 @@ class AddRemainderFragment : Fragment() {
             this.findNavController().navigate(AddRemainderFragmentDirections.addReminderToMain())
         }
 
-        textFieldSample.doOnTextChanged { sample,_,_, _ ->
-            Log.d("something change",sample.toString())
+        textFieldSample.doOnTextChanged { sample, _, _, _ ->
+            Log.d("something change", sample.toString())
         }
 
         binding.save.setOnClickListener {

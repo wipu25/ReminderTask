@@ -12,7 +12,7 @@ const val notificationID = 1
 const val titleExtra = "Title"
 const val messageExtra = "Message"
 
-class NotificationRepository: BroadcastReceiver() {
+class NotificationRepository : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         val notification = Notification.Builder(context, channelID)
             .setSmallIcon(R.drawable.notification)

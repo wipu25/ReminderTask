@@ -1,11 +1,15 @@
 package com.example.remindertask.presentation.screens.main
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.example.remindertask.presentation.BaseApplication
 import com.example.remindertask.data.models.data.ReminderForm
 import com.example.remindertask.data.source.repo.DatabaseRepository
+import com.example.remindertask.presentation.BaseApplication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

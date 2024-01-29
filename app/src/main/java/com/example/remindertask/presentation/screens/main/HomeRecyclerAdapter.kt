@@ -4,15 +4,18 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.remindertask.data.models.data.ReminderForm
 import com.example.remindertask.databinding.HorizontalRecyclerBinding
 import com.example.remindertask.databinding.RecyclerItemBinding
 import com.example.remindertask.models.HorizontalModel
 import com.example.remindertask.models.RecyclerItem
 import com.example.remindertask.models.Type
 import com.example.remindertask.models.VerticalItem
-import com.example.remindertask.data.models.data.ReminderForm
 
-class HomeRecyclerAdapter(private val onPressCallback: (reminderForm: ReminderForm) -> Unit, private val removeItem: (uid: Int, position: Int) -> Unit):
+class HomeRecyclerAdapter(
+    private val onPressCallback: (reminderForm: ReminderForm) -> Unit,
+    private val removeItem: (uid: Int, position: Int) -> Unit
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var recyclerList: List<RecyclerItem> = listOf()
@@ -29,18 +32,20 @@ class HomeRecyclerAdapter(private val onPressCallback: (reminderForm: ReminderFo
         }
     }
 
-    class VerticalHolder(private val recyclerItem: RecyclerItemBinding,
-                         private val onPressCallback: (reminderForm: ReminderForm) -> Unit,
-                         private val removeItem: (uid: Int, position: Int) -> Unit) :
+    class VerticalHolder(
+        private val recyclerItem: RecyclerItemBinding,
+        private val onPressCallback: (reminderForm: ReminderForm) -> Unit,
+        private val removeItem: (uid: Int, position: Int) -> Unit
+    ) :
         RecyclerView.ViewHolder(recyclerItem.root) {
         fun bind(reminderForm: ReminderForm, position: Int) {
             recyclerItem.text.text = reminderForm.title
             recyclerItem.description.text = reminderForm.description
-            recyclerItem.root.setOnClickListener{
+            recyclerItem.root.setOnClickListener {
                 onPressCallback(reminderForm)
             }
             recyclerItem.bin.setOnClickListener {
-                removeItem(reminderForm.uid,position)
+                removeItem(reminderForm.uid, position)
             }
         }
     }
@@ -56,7 +61,7 @@ class HomeRecyclerAdapter(private val onPressCallback: (reminderForm: ReminderFo
         } else {
             val itemBinding =
                 RecyclerItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            VerticalHolder(itemBinding,onPressCallback,removeItem)
+            VerticalHolder(itemBinding, onPressCallback, removeItem)
         }
     }
 
@@ -70,7 +75,10 @@ class HomeRecyclerAdapter(private val onPressCallback: (reminderForm: ReminderFo
             layoutParams.isFullSpan = true
             (holder as HorizontalHolder).bind((recyclerList[position] as HorizontalModel).list)
         } else {
-            (holder as VerticalHolder).bind((recyclerList[position] as VerticalItem).reminderForm, position)
+            (holder as VerticalHolder).bind(
+                (recyclerList[position] as VerticalItem).reminderForm,
+                position
+            )
         }
     }
 

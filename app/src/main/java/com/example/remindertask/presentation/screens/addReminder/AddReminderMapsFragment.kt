@@ -122,8 +122,8 @@ class AddReminderMapsFragment : Fragment() {
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             locationManager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER,
-                1000L,
+                LocationManager.NETWORK_PROVIDER,
+                0L,
                 1f,
                 locationListener
             )
@@ -132,6 +132,7 @@ class AddReminderMapsFragment : Fragment() {
 
     private fun setLocation(googleMap: GoogleMap, latLng: LatLng) {
         googleMap.apply {
+            clear()
             addMarker(
                 MarkerOptions().position(latLng).title("Marker in your current location")
             )
