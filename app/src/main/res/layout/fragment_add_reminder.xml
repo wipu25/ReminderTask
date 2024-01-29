@@ -48,33 +48,23 @@
             app:layout_constraintLeft_toLeftOf="parent"
             />
 
-        <EditText
-            android:id="@+id/tex_field_sample"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/location"
-            app:layout_constraintLeft_toLeftOf="parent"
-            />
-
         <LinearLayout
-            app:layout_constraintTop_toBottomOf="@id/tex_field_sample"
-            app:layout_constraintLeft_toLeftOf="parent"
             android:id="@+id/alert"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/location">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Alert for reminder"
-                />
+                android:text="Alert for reminder" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/switch_alert"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 

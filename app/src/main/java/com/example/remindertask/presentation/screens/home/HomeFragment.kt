@@ -34,13 +34,12 @@ class HomeFragment : Fragment() {
 
         binding = FragmentMainBinding.inflate(inflater, container, false)
         val recyclerAdapter = HomeRecyclerAdapter(::displayDialog, homeViewModel::removeItem)
-        recyclerAdapter.recyclerList = listOf(HorizontalModel(listOf<String>("a", "b", "c")))
+//        recyclerAdapter.recyclerList = listOf(HorizontalModel(listOf<String>("a", "b", "c")))
 
         recyclerAdapter.notifyItemInserted(0)
 
         homeViewModel.allReminder.observe(viewLifecycleOwner) { it ->
-            recyclerAdapter.recyclerList =
-                listOf(recyclerAdapter.recyclerList[0]) + it.map { e -> VerticalItem(e) }.toList()
+            recyclerAdapter.recyclerList = it.map { e -> VerticalItem(e) }.toList()
             if (homeViewModel.removeIndex != null) {
                 recyclerAdapter.notifyItemRemoved(homeViewModel.removeIndex!!)
                 Toast.makeText(this.context, "Successfully remove reminder", Toast.LENGTH_SHORT)

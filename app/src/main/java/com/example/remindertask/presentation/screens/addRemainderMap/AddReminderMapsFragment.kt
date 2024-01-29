@@ -55,13 +55,12 @@ class AddReminderMapsFragment : Fragment() {
         mapFragment?.getMapAsync(callback)
         viewModel =
             ViewModelProvider(requireActivity())[AddRemainderMapViewModel(requireActivity().application)::class.java]
+        getCurrentLocation()
         shouldDisplayMap()
         viewModel.apply {
             isGPSLocation.observe(viewLifecycleOwner) {
                 if (!it) {
                     locationManager.removeUpdates(locationListener)
-                } else {
-                    getCurrentLocation()
                 }
             }
             selectedLocation.observe(viewLifecycleOwner) {

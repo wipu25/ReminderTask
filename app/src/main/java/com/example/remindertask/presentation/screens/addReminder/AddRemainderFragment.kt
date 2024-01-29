@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -20,6 +21,8 @@ import com.example.remindertask.databinding.FragmentAddReminderBinding
 import com.example.remindertask.databinding.TextFieldBinding
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import kotlin.math.min
 
 class AddRemainderFragment : Fragment() {
     private val viewModel: AddReminderViewModel by viewModels { AddReminderViewModel.Factory }
@@ -40,25 +43,22 @@ class AddRemainderFragment : Fragment() {
 
         val descriptionForm = binding.description
         val descriptionFormField = descriptionForm.field
-
-        val textFieldSample = binding.texFieldSample
-
         initTextField(titleForm, "Remainder Title", "Grocery")
         initTextField(descriptionForm, "Remainder Description", "Don't Forget to buy milk")
         initTextField(binding.location, "Remainder Location", "Bangkok")
         initTextField(startDateBinding, "Start Date", "2/12/2022")
         initTextField(endDateBinding, "End Date", "4/12/2022")
-        initTextField(binding.alertField, "Alert notification time", "12.00")
         initStartDateField()
         initEndDateField()
         initLocationField()
-        initAlertField()
 
         binding.switchAlert.setOnClickListener {
             viewModel.toggleAlertField()
         }
         viewModel.displayAlertField.observe(viewLifecycleOwner) {
             if (it) {
+                initTextField(binding.alertField, "Alert notification time", "12.00")
+                initAlertField()
                 binding.alertField.root.visibility = View.VISIBLE
             } else {
                 binding.alertField.root.visibility = View.GONE
@@ -67,63 +67,60 @@ class AddRemainderFragment : Fragment() {
 
         titleFormField.setText(viewModel.titleLiveData.value)
         titleFormField.doOnTextChanged { title, _, _, _ ->
-            viewModel.setTitle(title.toString())
-            val error = viewModel.checkTitleValue()
-            if (error != null) {
-                titleFormField.error = error
-                return@doOnTextChanged
-            }
-            titleFormField.error = null
+            titleFormField.error = viewModel.setTitle(title.toString())
         }
 
         descriptionFormField.setText(viewModel.descriptionLiveData.value)
-        descriptionFormField.doOnTextChanged { description, _, _, _ ->
-            viewModel.setDescription(description.toString())
-            val error = viewModel.checkDescriptionValue()
-            if (error != null) {
-                descriptionFormField.error = error
-                return@doOnTextChanged
-            }
-            descriptionFormField.error = null
+        binding.description.field.doOnTextChanged { description, _, _, _ ->
+            descriptionFormField.error = viewModel.setDescription(description.toString())
         }
 
         binding.cancel.setOnClickListener {
             this.findNavController().navigate(AddRemainderFragmentDirections.addReminderToMain())
         }
 
-        textFieldSample.doOnTextChanged { sample, _, _, _ ->
-            Log.d("something change", sample.toString())
-        }
-
         binding.save.setOnClickListener {
-            val titleError = viewModel.checkTitleValue()
-            val descriptionError = viewModel.checkDescriptionValue()
-            if (titleError != null) {
-                titleFormField.error = titleError
-                Toast.makeText(this.context, "Title field are empty please add", Toast.LENGTH_SHORT)
-                    .show()
-                return@setOnClickListener
-            }
-
-            if (descriptionError != null) {
-                descriptionFormField.error = descriptionError
-                Toast.makeText(
-                    this.context,
-                    "Description field are empty please add",
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
-                return@setOnClickListener
-            }
-
-            viewModel.onSave()
-//            scheduleNotification()
-            Toast.makeText(this.context, "Successfully save new reminder", Toast.LENGTH_SHORT)
-                .show()
-            this.findNavController().navigate(AddRemainderFragmentDirections.addReminderToMain())
+            onSavePressed()
         }
 
         return binding.root
+    }
+
+    private fun onSavePressed() {
+        val titleFormField = binding.title.field
+        val descriptionFormField = binding.title.field
+        val titleError = viewModel.checkTitleValue()
+        val descriptionError = viewModel.checkDescriptionValue()
+        if(titleError != null && descriptionError != null) {
+            titleFormField.error = titleError
+            descriptionFormField.error = descriptionError
+            Toast.makeText(this.context, "Please fill both empty field", Toast.LENGTH_SHORT)
+                .show()
+            return
+        }
+
+        if (titleError != null) {
+            titleFormField.error = titleError
+            Toast.makeText(this.context, "Title field are empty please add", Toast.LENGTH_SHORT)
+                .show()
+            return
+        }
+
+        if (descriptionError != null) {
+            descriptionFormField.error = descriptionError
+            Toast.makeText(
+                this.context,
+                "Description field are empty please add",
+                Toast.LENGTH_SHORT
+            )
+                .show()
+            return
+        }
+
+        viewModel.onSave()
+        Toast.makeText(this.context, "Successfully save new reminder", Toast.LENGTH_SHORT)
+            .show()
+        this.findNavController().navigate(AddRemainderFragmentDirections.addReminderToMain())
     }
 
     private fun initLocationField() {
@@ -141,6 +138,7 @@ class AddRemainderFragment : Fragment() {
     }
 
     private fun initTextField(binding: TextFieldBinding, title: String, hint: String) {
+        binding.field.id = (binding.field.parent as ConstraintLayout).id + binding.field.id
         binding.title.text = title
         binding.field.hint = hint
     }
@@ -150,10 +148,7 @@ class AddRemainderFragment : Fragment() {
         disableFieldSettings(fieldBinding)
 
         viewModel.startDateLiveData.observe(this.viewLifecycleOwner) { startDate ->
-            val year = startDate.year
-            val month = startDate.monthValue
-            val day = startDate.dayOfMonth
-            fieldBinding.setText("$day/$month/$year")
+            fieldBinding.setText(startDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
         }
 
         fieldBinding.setOnClickListener {
@@ -166,11 +161,8 @@ class AddRemainderFragment : Fragment() {
         val fieldBinding = endDateBinding.field
         disableFieldSettings(fieldBinding)
 
-        viewModel.endDateLiveData.observe(this.viewLifecycleOwner) { endDate ->
-            val year = endDate.year
-            val month = endDate.monthValue
-            val day = endDate.dayOfMonth
-            fieldBinding.setText("$day/$month/$year")
+        viewModel.endDateLiveData.observe(viewLifecycleOwner) { endDate ->
+            fieldBinding.setText(endDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
         }
 
         fieldBinding.setOnClickListener {
@@ -185,7 +177,11 @@ class AddRemainderFragment : Fragment() {
         disableFieldSettings(fieldBinding)
 
         viewModel.alertTimeLiveDate.observe(viewLifecycleOwner) {
-            binding.alertField.field.setText("${it.hour}:${it.minute}")
+            var minute = it.minute.toString()
+            if(it.minute!! < 10) {
+                minute = "0${minute}"
+            }
+            binding.alertField.field.setText("${it.hour}:$minute")
         }
 
         fieldBinding.setOnClickListener {

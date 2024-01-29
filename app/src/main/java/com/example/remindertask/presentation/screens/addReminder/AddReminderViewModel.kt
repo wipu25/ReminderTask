@@ -130,12 +130,14 @@ class AddReminderViewModel(
         return null
     }
 
-    fun setTitle(text: String) {
+    fun setTitle(text: String): String? {
         _titleLiveData.value = text
+        return checkTitleValue()
     }
 
-    fun setDescription(text: String) {
+    fun setDescription(text: String): String? {
         _descriptionLiveData.value = text
+        return checkDescriptionValue()
     }
 
     fun setLocation(location: SelectedLocation) {
