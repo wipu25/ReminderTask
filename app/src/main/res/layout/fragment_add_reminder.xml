@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".views.addReminder.FragmentAddReminder">
+    tools:context=".presentation.screens.addReminder.AddRemainderFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -22,6 +22,7 @@
         <include
             android:id="@+id/title"
             layout="@layout/text_field"
+            type="androidx.databinding.adapters.TextViewBindingAdapter.OnTextChanged"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/header_title"
@@ -47,8 +48,16 @@
             app:layout_constraintLeft_toLeftOf="parent"
             />
 
-        <LinearLayout
+        <EditText
+            android:id="@+id/tex_field_sample"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/location"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <LinearLayout
+            app:layout_constraintTop_toBottomOf="@id/tex_field_sample"
             app:layout_constraintLeft_toLeftOf="parent"
             android:id="@+id/alert"
             android:layout_width="match_parent"
