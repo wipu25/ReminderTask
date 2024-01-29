@@ -1,4 +1,4 @@
-package com.example.remindertask.presentation.screens.main
+package com.example.remindertask.presentation.screens.home
 
 import android.app.Dialog
 import android.os.Bundle
@@ -77,11 +77,10 @@ class HomeFragment : Fragment() {
             bind.alert.text =
                 "Alert Time: ${reminderForm.alertTime!!.hour} : ${reminderForm.alertTime!!.minute}"
             bind.alert.visibility = View.VISIBLE
-            bind.switchAlert.visibility = View.VISIBLE
         }
         dialog.show()
 
-        if (reminderForm.location != null) {
+        if (reminderForm.location?.latLng != null) {
             bind.locationAddr.visibility = View.VISIBLE
             bind.map.visibility = View.VISIBLE
             bind.locationAddr.text = reminderForm.location?.address

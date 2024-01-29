@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/main"
-        android:name="com.example.remindertask.presentation.screens.main.HomeFragment"
+        android:name="com.example.remindertask.presentation.screens.home.HomeFragment"
         tools:layout="@layout/fragment_main"
         >
         <action
@@ -45,7 +45,7 @@
 
     <fragment
         android:id="@+id/add_reminder_map"
-        android:name="com.example.remindertask.presentation.screens.addReminder.AddReminderMapsFragment"
+        android:name="com.example.remindertask.presentation.screens.addRemainderMap.AddReminderMapsFragment"
         tools:layout="@layout/fragment_add_reminder_maps"
         >
         <action
@@ -62,7 +62,7 @@
 
     <fragment
         android:id="@+id/map_search"
-        android:name="com.example.remindertask.presentation.screens.mapSearch.MapSearchFragment"
+        android:name="com.example.remindertask.presentation.screens.addRemainderMap.mapSearch.MapSearchFragment"
         tools:layout="@layout/fragment_map_search">
         <action
             android:id="@+id/map_search_to_add_map"

@@ -1,4 +1,4 @@
-package com.example.remindertask.presentation.screens.main
+package com.example.remindertask.presentation.screens.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

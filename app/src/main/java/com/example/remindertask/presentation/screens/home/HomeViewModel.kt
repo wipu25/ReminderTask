@@ -1,4 +1,4 @@
-package com.example.remindertask.presentation.screens.main
+package com.example.remindertask.presentation.screens.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

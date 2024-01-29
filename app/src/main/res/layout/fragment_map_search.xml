@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="8dp"
-    tools:context=".presentation.screens.mapSearch.MapSearchFragment">
+    tools:context=".presentation.screens.addRemainderMap.mapSearch.MapSearchFragment">
 
     <LinearLayout
         android:id="@+id/search_field"

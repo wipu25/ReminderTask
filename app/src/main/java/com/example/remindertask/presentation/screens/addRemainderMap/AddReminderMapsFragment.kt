@@ -1,4 +1,4 @@
-package com.example.remindertask.presentation.screens.addReminder
+package com.example.remindertask.presentation.screens.addRemainderMap
 
 import android.Manifest
 import android.content.Context
@@ -16,34 +16,27 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.remindertask.databinding.FragmentAddReminderMapsBinding
-import com.example.remindertask.presentation.screens.mapSearch.MapSearchViewModel
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 
 class AddReminderMapsFragment : Fragment() {
-
     private lateinit var binding: FragmentAddReminderMapsBinding
-    private lateinit var viewModel: MapSearchViewModel
-
+    private lateinit var viewModel: AddRemainderMapViewModel
+    private lateinit var locationManager: LocationManager
+    private val locationListener = LocationListener {
+        val current = LatLng(it.latitude, it.longitude)
+        viewModel.setLocation(current)
+        viewModel.setGPSLocation(false)
+    }
     private val callback = OnMapReadyCallback { googleMap ->
-        getCurrentLocation(googleMap)
-        viewModel.selectedLocation.observe(viewLifecycleOwner) {
-            if (it != null) {
-                binding.searchField.setText(it.address ?: "")
-                setLocation(googleMap, it.latLng!!)
-            }
-        }
-        googleMap.setOnMapClickListener {
-            viewModel.setSelectedLocation(it)
-            googleMap.apply {
-                clear()
-                addMarker(MarkerOptions().position(it))
-            }
-        }
+        viewModel.setGoogleMap(googleMap)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        locationManager =
+            requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -57,12 +50,26 @@ class AddReminderMapsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel =
-            ViewModelProvider(requireActivity())[MapSearchViewModel(requireActivity().application)::class.java]
-        shouldDisplayMap()
         val mapFragment =
             childFragmentManager.findFragmentById(binding.map.id) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+        viewModel =
+            ViewModelProvider(requireActivity())[AddRemainderMapViewModel(requireActivity().application)::class.java]
+        shouldDisplayMap()
+        viewModel.apply {
+            isGPSLocation.observe(viewLifecycleOwner) {
+                if (!it) {
+                    locationManager.removeUpdates(locationListener)
+                } else {
+                    getCurrentLocation()
+                }
+            }
+            selectedLocation.observe(viewLifecycleOwner) {
+                if (it != null) {
+                    binding.searchField.setText(it.address ?: "")
+                }
+            }
+        }
         initSearchField()
         binding.saveLocation.setOnClickListener {
             this.findNavController().navigate(
@@ -85,11 +92,7 @@ class AddReminderMapsFragment : Fragment() {
         val requestLocation = registerForActivityResult(
             ActivityResultContracts.RequestPermission(),
         ) { granted ->
-            if (granted) {
-                binding.noPermissionText.visibility = View.GONE
-                binding.noPermissionBtn.visibility = View.GONE
-                binding.map.visibility = View.VISIBLE
-            } else {
+            if (!granted) {
                 binding.noPermissionText.visibility = View.VISIBLE
                 binding.noPermissionBtn.visibility = View.VISIBLE
                 binding.map.visibility = View.GONE
@@ -108,14 +111,7 @@ class AddReminderMapsFragment : Fragment() {
         }
     }
 
-    private fun getCurrentLocation(googleMap: GoogleMap) {
-        val locationManager =
-            requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val locationListener = LocationListener {
-            val current = LatLng(it.latitude, it.longitude)
-            setLocation(googleMap, current)
-            viewModel.setSelectedLocation(current)
-        }
+    private fun getCurrentLocation() {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -127,17 +123,6 @@ class AddReminderMapsFragment : Fragment() {
                 1f,
                 locationListener
             )
-        }
-    }
-
-    private fun setLocation(googleMap: GoogleMap, latLng: LatLng) {
-        googleMap.apply {
-            clear()
-            addMarker(
-                MarkerOptions().position(latLng).title("Marker in your current location")
-            )
-            moveCamera(CameraUpdateFactory.newLatLng(latLng))
-            animateCamera(CameraUpdateFactory.zoomTo(11.0f))
         }
     }
 }

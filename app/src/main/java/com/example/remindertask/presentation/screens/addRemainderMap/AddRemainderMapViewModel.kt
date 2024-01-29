@@ -1,4 +1,4 @@
-package com.example.remindertask.presentation.screens.mapSearch
+package com.example.remindertask.presentation.screens.addRemainderMap
 
 import android.app.Application
 import android.util.Log
@@ -9,12 +9,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.remindertask.R
 import com.example.remindertask.data.models.data.SelectedLocation
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
@@ -22,21 +24,25 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class MapSearchViewModel(application: Application) : AndroidViewModel(application) {
+class AddRemainderMapViewModel(application: Application) : AndroidViewModel(application) {
     private var _placesClient: PlacesClient
     private var _resultLiveDate: MutableLiveData<List<AutocompletePrediction>> = MutableLiveData(
         mutableListOf()
     )
     private var _selectedLocation: MutableLiveData<SelectedLocation> = MutableLiveData()
+    private var _isGPSLocation: MutableLiveData<Boolean> = MutableLiveData(true)
+    private var _googleMap: GoogleMap? = null
     val resultLiveData: LiveData<List<AutocompletePrediction>>
         get() = _resultLiveDate
     val selectedLocation: LiveData<SelectedLocation>
         get() = _selectedLocation
+    val isGPSLocation: LiveData<Boolean>
+        get() = _isGPSLocation
 
     init {
-        val application = getApplication<Application>()
+        val applicationState = getApplication<Application>()
         Places.initialize(
-            application.applicationContext,
+            applicationState.applicationContext,
             application.resources.getString(R.string.api_key_google_map)
         )
         _placesClient = Places.createClient(application.applicationContext)
@@ -47,7 +53,6 @@ class MapSearchViewModel(application: Application) : AndroidViewModel(applicatio
         val request =
             FindAutocompletePredictionsRequest.builder()
                 .setCountries("TH")
-                .setTypeFilter(TypeFilter.ADDRESS)
                 .setSessionToken(token)
                 .setQuery(text)
                 .build()
@@ -72,11 +77,35 @@ class MapSearchViewModel(application: Application) : AndroidViewModel(applicatio
             val fetchPlaceRequest =
                 FetchPlaceRequest.newInstance(autocompletePrediction.placeId, placeFields)
             val result = _placesClient.fetchPlace(fetchPlaceRequest).await()
-            _selectedLocation.value = SelectedLocation(result.place.latLng, result.place.address)
+            setLocation(result.place.latLng!!, result.place.address)
         }
     }
 
-    fun setSelectedLocation(latLng: LatLng) {
-        _selectedLocation.value = SelectedLocation(latLng, "My Pin Location")
+    fun setLocation(latLng: LatLng, address: String? = null) {
+        _selectedLocation.value = SelectedLocation(latLng, address ?: "My Pin Location")
+        _googleMap?.apply {
+            clear()
+            addMarker(
+                MarkerOptions().position(latLng).title("Marker in your current location")
+            )
+            moveCamera(CameraUpdateFactory.newLatLng(latLng))
+            animateCamera(CameraUpdateFactory.zoomTo(11.0f))
+            setOnMapClickListener {
+                setLocation(it)
+            }
+        }
+    }
+
+    fun setGPSLocation(boolean: Boolean) {
+        _isGPSLocation.value = boolean
+    }
+
+    fun setGoogleMap(googleMap: GoogleMap) {
+        _googleMap = googleMap
+        googleMap.apply {
+            setOnMapClickListener {
+                setLocation(it)
+            }
+        }
     }
 }

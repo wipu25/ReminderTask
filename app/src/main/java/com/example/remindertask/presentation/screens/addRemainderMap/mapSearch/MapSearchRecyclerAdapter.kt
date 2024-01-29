@@ -1,4 +1,4 @@
-package com.example.remindertask.presentation.screens.mapSearch
+package com.example.remindertask.presentation.screens.addRemainderMap.mapSearch
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,7 +9,7 @@ import com.google.android.libraries.places.api.model.AutocompletePrediction
 class MapSearchRecyclerAdapter(private val onClickListener: (AutocompletePrediction) -> Unit) :
     RecyclerView.Adapter<MapSearchRecyclerAdapter.MapSearchItem>() {
 
-    var resultList: List<AutocompletePrediction> = listOf()
+    private var resultList: List<AutocompletePrediction> = listOf()
 
     class MapSearchItem(private val item: MapSearchItemBinding, onClickListener: (Int) -> Unit) :
         RecyclerView.ViewHolder(item.root) {
